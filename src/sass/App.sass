@@ -1,0 +1,33 @@
+.dillers
+    display: flex
+    flex-direction: column
+    padding: 10px;
+    border: 1px solid;
+    margin: 10px 0;
+    
+.dillersHeader 
+    display: flex
+    list-style: none
+    border-top: 1px solid black
+    border-bottom: 1px solid black
+    padding: 0
+    li
+        margin: 5px 0
+        font-weight: bold
+
+.dillersContainer
+    display: flex
+    flex-direction: column
+    gap: 10px
+    padding: 0
+    
+.cellContainer
+    list-style: none
+    display: flex
+    width: 100%
+    padding: 10px 0
+    & + .cellContainer
+        border-top: 1px solid black
+
+.cell 
+    width: 25%
