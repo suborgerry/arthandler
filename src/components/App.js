@@ -4,33 +4,46 @@ import { useEffect, useState } from 'react';
 
 function App() {
   const [dataProducts, setDataProducts] = useState(null);
-  const [atr, setAtr] = useState('')
+  const [atr, setAtr] = useState('');
   const [input, setInput] = useState('');
+
+  // States
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(false);
+
+  //Errors
+  const catchError   = `Ошибка в запросе. Проверьте правильность ввода и попробуйте еще раз`;
 
   async function responseProducts() {
     try {
-      const response = await axios.get('../prices.json');
-      setDataProducts(response.data.catalog);
-      console.log('responseProducts');
+      setIsLoading(true);
+      const { data } = await axios.get('../prices.json');
+      console.log(data.catalog);
+      setDataProducts(data.catalog);
     } catch (error) {
       console.error(error);
+      setError(catchError);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   useEffect(()=>{responseProducts()},[]);
 
   async function getProducts() {
-    setAtr(input);
-    console.log('getProducts')
+      setAtr(input);
   };
 
   function handleInput(evt) {
-    setInput(evt.target.value);
-    console.log('handleInput');
+      setInput(evt.target.value.length <= 5 ?
+        (evt.target.value.length === 0 ? '' : [...evt.target.value].filter(e => isFinite(e)).join('')) : // Disable inputs letter
+        input
+      );
+      console.log(/[^0-9]/.test(input));
   };
 
   const Products = atr && dataProducts && dataProducts[1].products.map((product, index) => 
-  (product.sku?.includes(atr) && !(atr.length===4)) &&
+  product.sku?.includes(atr) &&
     <>
       <p>
         <b>Товар: </b><span>{product.name}</span>
@@ -54,6 +67,7 @@ function App() {
                   <span className="cell">{suppilier.name}</span>
                   <span className="cell">{suppilier.product.quantity}</span>
                   <span className="cell">{suppilier.product.price}</span>
+                  <span>{index}</span>
                 </li> 
               }
             </>
@@ -65,13 +79,19 @@ function App() {
   return (
     <div className="App">
       <div className="container">
-      <p>Поиск товара по артикулу</p>
-      <input type="text" id="inputFilter" value={input} onChange={handleInput} placeholder="АРТИКУЛ"/>
-      <button type="button" onClick={getProducts}>ИСКАТЬ</button>
-        { Products && 
-          <div className="dillers">
-            {Products}
-          </div> }
+        {isLoading ? <p>Загрузка базы поставщиков &#9203;</p> :
+          <>
+            <p>Поиск товара по артикулу</p>
+            <p>Артикул - 5 цифр.</p>
+            <input type="text" id="inputFilter" value={input} onChange={handleInput} placeholder="АРТИКУЛ"/>
+            <button type="button" onClick={getProducts} disabled={input.length!==5 ? true : false}>ИСКАТЬ</button>
+              { error ? <p>⚠️ {error}</p> : 
+                Products && 
+                  <div className="dillers">
+                    {Products}
+                  </div> }
+          </>
+        }
       </div>
     </div>
   );
