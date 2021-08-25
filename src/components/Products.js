@@ -2,7 +2,7 @@ function Products(props) {
     const handleProducts = props.atr && 
                            props.dataProducts && 
                            props.dataProducts[1].products.map((product, index) => 
-    product.sku === props.atr &&
+    product.mpn === props.atr &&
         <div key="productContainer">
             <p key="product">
                 <b>Товар: </b><span>{product.name}</span>
