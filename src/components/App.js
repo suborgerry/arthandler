@@ -10,7 +10,7 @@ function App() {
   const { dataProducts, isLoading, error } = ProductResponce();
   
   function getProducts() {
-      setAtr(input);
+      setAtr(input.trim());
   };
 
   function handleInput(evt) {
