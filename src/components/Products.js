@@ -2,7 +2,7 @@ function Products(props) {
     const handleProducts = props.atr && 
                            props.dataProducts && 
                            props.dataProducts[1].products.map((product, index) => 
-    product.mpn === props.atr &&
+    product.mpn.toLowerCase() === props.atr.toLowerCase() &&
         <div key="productContainer">
             <p key="product">
                 <b>Товар: </b><span>{product.name}</span>
